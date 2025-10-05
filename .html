@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avinash - Personal Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for dark mode */
+        .dark {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        .dark .bg-white {
+            background-color: #2a2a2a;
+        }
+        
+        .dark .text-gray-800 {
+            color: #e0e0e0;
+        }
+        
+        .dark .text-gray-600 {
+            color: #b0b0b0;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #444;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #333;
+        }
+        
+        .dark .bg-gray-100 {
+            background-color: #3a3a3a;
+        }
+        
+        .dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Gallery styles */
+        .gallery-item {
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #333;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #666;
+        }
+        
+        /* Animation for elements */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50 transition-colors duration-300">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                    A
+                </div>
+                <span class="text-xl font-bold">Avinash</span>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#home" class="hover:text-blue-500 transition-colors">Home</a>
+                <a href="#about" class="hover:text-blue-500 transition-colors">About</a>
+                <a href="#blog" class="hover:text-blue-500 transition-colors">Blog</a>
+                <a href="#gallery" class="hover:text-blue-500 transition-colors">Gallery</a>
+                <a href="#projects" class="hover:text-blue-500 transition-colors">Projects</a>
+                <a href="#ai" class="hover:text-blue-500 transition-colors">AI Corner</a>
+                <a href="#contact" class="hover:text-blue-500 transition-colors">Contact</a>
+                
+                <!-- Search Bar -->
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Search..." class="px-3 py-1 border border-gray-300 rounded-full text-sm focus:outline-none focus:border-blue-500">
+                    <button id="search-btn" class="absolute right-0 top-0 h-full px-2 text-gray-500 hover:text-blue-500">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <!-- Dark Mode Toggle -->
+                <button id="dark-mode-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-moon text-gray-700"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors">
+                <i class="fas fa-bars text-gray-700"></i>
+            </button>
+        </nav>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4 py-4 space-y-3">
+                <a href="#home" class="block hover:text-blue-500 transition-colors">Home</a>
+                <a href="#about" class="block hover:text-blue-500 transition-colors">About</a>
+                <a href="#blog" class="block hover:text-blue-500 transition-colors">Blog</a>
+                <a href="#gallery" class="block hover:text-blue-500 transition-colors">Gallery</a>
+                <a href="#projects" class="block hover:text-blue-500 transition-colors">Projects</a>
+                <a href="#ai" class="block hover:text-blue-500 transition-colors">AI Corner</a>
+                <a href="#contact" class="block hover:text-blue-500 transition-colors">Contact</a>
+                
+                <div class="relative pt-2">
+                    <input type="text" id="mobile-search-input" placeholder="Search..." class="w-full px-3 py-1 border border-gray-300 rounded-full text-sm focus:outline-none focus:border-blue-500">
+                    <button id="mobile-search-btn" class="absolute right-0 top-2 h-full px-2 text-gray-500 hover:text-blue-500">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="flex justify-center pt-2">
+                    <button id="mobile-dark-mode-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-moon text-gray-700"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center fade-in">
+            <div class="text-center max-w-3xl">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                    Welcome to My Space
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-600 mb-8">
+                    Hi, I'm Avinash 👋 — a student, learner, and explorer. This is my corner of the internet where I share anything and everything — thoughts, blogs, projects, random experiments, and pieces of my life. No filters, no limits, just me being real.
+                </p>
+                <p class="text-lg text-gray-600 mb-8">
+                    👉 Stick around to explore my blogs, photo gallery, and personal updates.
+                </p>
+                <div class="flex justify-center space-x-4 mb-8">
+                    <a href="https://instagram.com/avinashsingh1095" target="_blank" class="p-3 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://youtube.com/channel/UC6vQOSDDcHFoTM-9YfF3P-Q" target="_blank" class="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+                        <i class="fab fa-youtube text-xl"></i>
+                    </a>
+                    <a href="mailto:avinash@example.com" class="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+                <a href="#about" class="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg transition-all">
+                    Learn More About Me
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">About Me</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-8 md:flex items-center gap-8">
+                    <div class="md:w-1/3 mb-6 md:mb-0">
+                        <img src="https://picsum.photos/seed/avinash/400/400.jpg" alt="Avinash" class="rounded-full w-full max-w-xs mx-auto">
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-2xl font-semibold mb-4">Hello, I'm Avinash!</h3>
+                        <div class="space-y-3 text-gray-600">
+                            <p class="flex items-start">
+                                <span class="mr-2">🎓</span>
+                                <span>A student with interests in science, tech, adventure, and sports</span>
+                            </p>
+                            <p class="flex items-start">
+                                <span class="mr-2">📚</span>
+                                <span>Currently focusing on Maths, Physics, and coding</span>
+                            </p>
+                            <p class="flex items-start">
+                                <span class="mr-2">💡</span>
+                                <span>I enjoy exploring anime, comics, and writing stories</span>
+                            </p>
+                            <p class="flex items-start">
+                                <span class="mr-2">💪</span>
+                                <span>Trying to balance studies, fitness, and fun</span>
+                            </p>
+                            <p class="flex items-start">
+                                <span class="mr-2"><br></span>
+                                <span><br></span>
+                            </p>
+                        </div>
+                        <p class="text-gray-600 mt-4">
+                            This site is my online journal where I can share my journey, ideas, and experiments.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mt-6">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Science</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Tech</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">Anime</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Writing</span>
+                            <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">Sports</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Blog / Thoughts</h2>
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h3 class="text-2xl font-semibold mb-4">Here, I'll be posting:</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-pen text-blue-500 mt-1 mr-3"></i>
+                            <span>Daily thoughts, learnings, or random rants</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-laptop-code text-green-500 mt-1 mr-3"></i>
+                            <span>Study hacks and tech experiments</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-users text-purple-500 mt-1 mr-3"></i>
+                            <span>Personal stories &amp; memories with friends and family</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-book text-red-500 mt-1 mr-3"></i>
+                            <span>Reviews of anime/manga I love</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Blog Post 1 -->
+                <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://picsum.photos/seed/blog1/600/400.jpg" alt="Blog post" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span>June 15, 2023</span>
+                            <span class="mx-2">•</span>
+                            <span>5 min read</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">My Journey into Coding</h3>
+                        <p class="text-gray-600 mb-4">How I discovered my passion for programming and the challenges I've faced along the way...</p>
+                        <a href="#" class="text-blue-500 hover:text-blue-700 font-medium">Read More →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 2 -->
+                <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://picsum.photos/seed/blog2/600/400.jpg" alt="Blog post" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span>May 28, 2023</span>
+                            <span class="mx-2">•</span>
+                            <span>3 min read</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Anime That Changed My Perspective</h3>
+                        <p class="text-gray-600 mb-4">A list of anime series that have deeply influenced my thinking and creativity...</p>
+                        <a href="#" class="text-blue-500 hover:text-blue-700 font-medium">Read More →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 3 -->
+                <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <img src="https://picsum.photos/seed/blog3/600/400.jpg" alt="Blog post" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span>May 10, 2023</span>
+                            <span class="mx-2">•</span>
+                            <span>7 min read</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Study Hacks for Physics</h3>
+                        <p class="text-gray-600 mb-4">Tips and tricks that helped me master complex physics concepts...</p>
+                        <a href="#" class="text-blue-500 hover:text-blue-700 font-medium">Read More →</a>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                    View All Posts
+                </button>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Gallery</h2>
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h3 class="text-2xl font-semibold mb-4">What you'll find here:</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-camera text-blue-500 mt-1 mr-3"></i>
+                            <span>Photos from my life, friends, family, and adventures</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-desktop text-green-500 mt-1 mr-3"></i>
+                            <span>Screenshots from projects or anything creative I'm working on</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery1/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery1/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery2/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery2/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery3/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery3/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery4/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery4/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery5/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery5/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery6/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery6/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery7/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery7/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <div class="gallery-item cursor-pointer" data-src="https://picsum.photos/seed/gallery8/800/800.jpg">
+                    <img src="https://picsum.photos/seed/gallery8/400/400.jpg" alt="Gallery image" class="w-full h-full object-cover rounded-lg">
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                    View All Photos
+                </button>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Projects</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <div class="h-48 bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+                        <i class="fas fa-code text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Physics Calculator</h3>
+                        <p class="text-gray-600 mb-4">A web app to solve complex physics equations with step-by-step explanations.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">JavaScript</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Physics</span>
+                            </div>
+                            <a href="#" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <div class="h-48 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+                        <i class="fas fa-book text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Anime Review Blog</h3>
+                        <p class="text-gray-600 mb-4">A personal blog where I review and discuss my favorite anime series.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">HTML</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">CSS</span>
+                            </div>
+                            <a href="#" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                    <div class="h-48 bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-gamepad text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2">Story Creator</h3>
+                        <p class="text-gray-600 mb-4">An interactive web app to create and share creative stories with friends.</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-2">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">JavaScript</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Creative</span>
+                            </div>
+                            <a href="#" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                    View All Projects
+                </button>
+            </div>
+        </section>
+
+        <!-- AI Corner Section -->
+        <section id="ai" class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">AI Corner</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h3 class="text-2xl font-semibold mb-4">AI-Generated Content</h3>
+                    <p class="text-gray-600 mb-6">
+                        This section showcases AI-generated summaries and insights from my blog posts and projects. It's a fun experiment in human-AI collaboration!
+                    </p>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                        <h4 class="text-lg font-semibold mb-2">Latest AI Summary</h4>
+                        <p class="text-gray-600 italic">
+                            "Avinash's recent work explores the intersection of science, technology, and creativity. His physics calculator project demonstrates his passion for making complex concepts accessible, while his anime reviews showcase his analytical thinking and love for storytelling..."
+                        </p>
+                        <div class="flex items-center mt-3 text-sm text-gray-500">
+                            <i class="fas fa-robot mr-2"></i>
+                            <span>Generated by AI Assistant • 2 hours ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 rounded-lg p-6">
+                        <h4 class="text-lg font-semibold mb-2">AI Assistant</h4>
+                        <p class="text-gray-600 mb-4">
+                            Have a question about my work? Ask my AI assistant for quick answers!
+                        </p>
+                        <div class="flex">
+                            <input type="text" id="ai-chat-input" placeholder="Type your question here..." class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-blue-500">
+                            <button id="ai-chat-btn" class="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 transition-colors">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div id="ai-response" class="mt-4 p-4 bg-white rounded-lg hidden">
+                            <p class="text-gray-600"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="py-16 fade-in">
+            <div class="max-w-2xl mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 text-white text-center">
+                <h2 class="text-3xl font-bold mb-4">Stay Connected</h2>
+                <p class="mb-6">Subscribe to my newsletter for updates on new posts, projects, and exclusive content.</p>
+                <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <input type="email" id="newsletter-email" placeholder="Your email address" required="" class="px-4 py-3 rounded-lg text-gray-800 focus:outline-none">
+                    <button type="submit" class="px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Subscribe
+                    </button>
+                </form>
+                <p id="newsletter-message" class="mt-4 hidden"></p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Contact Me</h2>
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <h3 class="text-xl font-semibold mb-4">Want to connect? You can reach me through:</h3>
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-blue-500 text-xl mr-4 w-6"></i>
+                            <a href="mailto:avinash@example.com" class="text-gray-600 hover:text-blue-500">avinash1919982006@gmail.com</a>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fab fa-instagram text-pink-500 text-xl mr-4 w-6"></i>
+                            <a href="https://instagram.com/avinashsingh1095" target="_blank" class="text-gray-600 hover:text-pink-500">@avinashsingh1095</a>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fab fa-youtube text-red-500 text-xl mr-4 w-6"></i>
+                            <a href="https://youtube.com/channel/UC6vQOSDDcHFoTM-9YfF3P-Q" target="_blank" class="text-gray-600 hover:text-red-500">My Channel</a>
+                        </div>
+                    </div>
+                    
+                    <form id="contact-form">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+                            <input type="text" id="name" name="name" required="" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" id="email" name="email" required="" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="subject" class="block text-gray-700 font-medium mb-2">Subject</label>
+                            <input type="text" id="subject" name="subject" required="" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                            <textarea id="message" name="message" rows="5" required="" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            Send Message
+                        </button>
+                    </form>
+                    <div id="contact-message" class="mt-4 p-4 rounded-lg hidden"></div>
+                </div>
+                
+                <div class="mt-8 flex justify-center space-x-6">
+                    <a href="https://instagram.com/avinashsingh1095" target="_blank" class="p-3 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://youtube.com/channel/UC6vQOSDDcHFoTM-9YfF3P-Q" target="_blank" class="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+                        <i class="fab fa-youtube text-xl"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="p-3 bg-blue-400 text-white rounded-full hover:bg-blue-500 transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="https://github.com" target="_blank" class="p-3 bg-gray-800 text-white rounded-full hover:bg-gray-900 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="mailto:avinash@example.com" class="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Future Tools Section -->
+        <section class="py-16 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Coming Soon</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-upload text-blue-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">File Sharing</h3>
+                    <p class="text-gray-600 text-sm">Share and download files securely</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-poll text-green-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Polls &amp; Surveys</h3>
+                    <p class="text-gray-600 text-sm">Create and participate in polls</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-comments text-purple-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Community Forum</h3>
+                    <p class="text-gray-600 text-sm">Connect with like-minded people</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Events Calendar</h3>
+                    <p class="text-gray-600 text-sm">Stay updated with upcoming events</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>© 2023 Avinash. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-blue-400 transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-blue-400 transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-blue-400 transition-colors">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <button id="close-lightbox" class="absolute top-4 right-4 text-white text-3xl hover:text-gray-300">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="lightbox-img" src="" alt="Gallery image">
+    </div>
+
+    <!-- Chatbot Widget (Hidden by default) -->
+    <div id="chatbot-widget" class="fixed bottom-6 right-6 z-40 hidden">
+        <div class="bg-white rounded-lg shadow-lg w-80 h-96 flex flex-col">
+            <div class="bg-blue-500 text-white p-4 rounded-t-lg flex justify-between items-center">
+                <h3 class="font-semibold">AI Assistant</h3>
+                <button id="close-chatbot" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex-1 p-4 overflow-y-auto">
+                <div class="bg-gray-100 rounded-lg p-3 mb-3">
+                    <p class="text-sm">Hello! I'm Avinash's AI assistant. How can I help you today?</p>
+                </div>
+                <div id="chatbot-messages" class="space-y-3"></div>
+            </div>
+            <div class="p-4 border-t">
+                <div class="flex">
+                    <input type="text" id="chatbot-input" placeholder="Type your message..." class="flex-1 px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-blue-500">
+                    <button id="send-chatbot-message" class="px-3 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <button id="chatbot-toggle" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition-colors z-30">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
+        const body = document.body;
+        const darkModeIcon = darkModeToggle.querySelector('i');
+        const mobileDarkModeIcon = mobileDarkModeToggle.querySelector('i');
+
+        // Check for saved dark mode preference
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'true') {
+            body.classList.add('dark');
+            darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            mobileDarkModeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        function toggleDarkMode() {
+            body.classList.toggle('dark');
+            const isDarkMode = body.classList.contains('dark');
+            
+            if (isDarkMode) {
+                darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+                mobileDarkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+                mobileDarkModeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+            
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        mobileDarkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuIcon = mobileMenuToggle.querySelector('i');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenuIcon.classList.replace('fa-times', 'fa-bars');
+            } else {
+                mobileMenuIcon.classList.replace('fa-bars', 'fa-times');
+            }
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuIcon.classList.replace('fa-times', 'fa-bars');
+            });
+        });
+
+        // Gallery Lightbox
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const closeLightbox = document.getElementById('close-lightbox');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.getAttribute('data-src');
+                lightboxImg.setAttribute('src', imgSrc);
+                lightbox.classList.add('active');
+            });
+        });
+
+        closeLightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+
+        // Contact Form
+        const contactForm = document.getElementById('contact-form');
+        const contactMessage = document.getElementById('contact-message');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Simulate form submission
+            contactMessage.textContent = 'Thank you for your message! I\'ll get back to you soon.';
+            contactMessage.classList.add('bg-green-100', 'text-green-700', 'p-4', 'rounded-lg');
+            contactMessage.classList.remove('hidden');
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                contactMessage.classList.add('hidden');
+            }, 5000);
+        });
+
+        // Newsletter Form
+        const newsletterForm = document.getElementById('newsletter-form');
+        const newsletterEmail = document.getElementById('newsletter-email');
+        const newsletterMessage = document.getElementById('newsletter-message');
+
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Simulate newsletter subscription
+            newsletterMessage.textContent = `Thank you for subscribing with ${newsletterEmail.value}!`;
+            newsletterMessage.classList.remove('hidden');
+            
+            // Reset form
+            newsletterForm.reset();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                newsletterMessage.classList.add('hidden');
+            }, 5000);
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const mobileSearchBtn = document.getElementById('mobile-search-btn');
+
+        function performSearch(query) {
+            if (query.trim() === '') return;
+            
+            // In a real implementation, this would search the site content
+            alert(`Searching for: ${query}\n\nIn a real implementation, this would display search results.`);
+        }
+
+        searchBtn.addEventListener('click', () => {
+            performSearch(searchInput.value);
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch(searchInput.value);
+            }
+        });
+
+        mobileSearchBtn.addEventListener('click', () => {
+            performSearch(mobileSearchInput.value);
+        });
+
+        mobileSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch(mobileSearchInput.value);
+            }
+        });
+
+        // AI Chat Functionality
+        const aiChatInput = document.getElementById('ai-chat-input');
+        const aiChatBtn = document.getElementById('ai-chat-btn');
+        const aiResponse = document.getElementById('ai-response');
+
+        aiChatBtn.addEventListener('click', () => {
+            const query = aiChatInput.value.trim();
+            if (query === '') return;
+            
+            // Simulate AI response
+            aiResponse.querySelector('p').textContent = `AI Response: That's an interesting question about "${query}". Based on Avinash's content, I can tell you that he has explored this topic in several of his blog posts. He believes that the key to success in this area is a combination of creativity and technical skills.`;
+            aiResponse.classList.remove('hidden');
+            
+            // Reset input
+            aiChatInput.value = '';
+        });
+
+        aiChatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                aiChatBtn.click();
+            }
+        });
+
+        // Chatbot Widget
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotWidget = document.getElementById('chatbot-widget');
+        const closeChatbot = document.getElementById('close-chatbot');
+        const chatbotInput = document.getElementById('chatbot-input');
+        const sendChatbotMessage = document.getElementById('send-chatbot-message');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotWidget.classList.toggle('hidden');
+        });
+
+        closeChatbot.addEventListener('click', () => {
+            chatbotWidget.classList.add('hidden');
+        });
+
+        function addChatbotMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add(isUser ? 'bg-blue-500' : 'bg-gray-100', 'rounded-lg', 'p-3', 'mb-3');
+            
+            const messageP = document.createElement('p');
+            messageP.classList.add('text-sm', isUser ? 'text-white' : 'text-gray-800');
+            messageP.textContent = message;
+            
+            messageDiv.appendChild(messageP);
+            chatbotMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function handleChatbotMessage() {
+            const message = chatbotInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message
+            addChatbotMessage(message, true);
+            
+            // Simulate bot response
+            setTimeout(() => {
+                const responses = [
+                    "That's a great question! Avinash has written about this in his blog. Would you like me to find the specific post?",
+                    "I think I can help with that. Based on Avinash's projects, he has experience in this area.",
+                    "Interesting! Avinash is always exploring new ideas. Have you checked out his latest projects?",
+                    "I'm not sure about that, but I can suggest reaching out to Avinash directly through the contact form."
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addChatbotMessage(randomResponse);
+            }, 1000);
+            
+            // Reset input
+            chatbotInput.value = '';
+        }
+
+        sendChatbotMessage.addEventListener('click', handleChatbotMessage);
+        chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleChatbotMessage();
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add fade-in animation to elements when they come into view
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+
+</body></html>
